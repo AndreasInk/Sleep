@@ -7,14 +7,20 @@
 
 import SwiftUI
 
-struct Day: View {
-    var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
-    }
-}
 
-struct Day_Previews: PreviewProvider {
-    static var previews: some View {
-        Day()
-    }
+struct Day: Identifiable, Codable, Hashable {
+    
+    var id = UUID()
+    var up: Bool
+    var date: Date
+    
+
+}
+struct User: Identifiable, Codable, Hashable {
+    
+    var id = UUID()
+    var name: String
+    var points: Int
+    
+
 }

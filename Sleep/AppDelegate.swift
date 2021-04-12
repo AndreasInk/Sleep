@@ -6,14 +6,23 @@
 //
 
 import UIKit
-
+import Firebase
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        FirebaseApp.configure()
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+            if success {
+                print("All set!")
+            } else if let error = error {
+                print(error.localizedDescription)
+            }
+        }
+        setUpLocalNotification(hour: UserDefaults.standard.integer(forKey: "hour"), minute: UserDefaults.standard.integer(forKey: "minute"))
+       
         return true
     }
 
@@ -31,6 +40,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
 
+    func setUpLocalNotification(hour: Int, minute: Int) {
 
+       // have to use NSCalendar for the components
+        let notificationContent = UNMutableNotificationContent()
+        notificationContent.title = "Log"
+        notificationContent.body = "hi"
+        notificationContent.badge = NSNumber(value: 1)
+        notificationContent.sound = .default
+                        
+        var datComp = DateComponents()
+        datComp.hour = hour
+        datComp.minute = minute
+        let trigger = UNCalendarNotificationTrigger(dateMatching: datComp, repeats: true)
+        let request = UNNotificationRequest(identifier: "ID", content: notificationContent, trigger: trigger)
+                        UNUserNotificationCenter.current().add(request) { (error : Error?) in
+                            if let theError = error {
+                                print(theError as! String)
+                            }
+                        }
+   }
 }
 
